@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System;
 using UnityEngine;
 
+[HasTests]
 public class TestRunner 
 {
     public  enum        TestStates

@@ -28,20 +28,27 @@ public class TestWindow : EditorWindow
         EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow");
     }
     
-    void OnInspectorUpdate () {}
+    void OnInspectorUpdate () {
+        if (_testHarness == null) { _testHarness = new TestHarness(); }
+
+        if (!_testHarness.HasTests) 
+        {
+            _testHarness.FindTests();
+            EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow").Repaint();
+        }
+    }
 
     void OnGUI () 
     {
         _SetupStyles();
-
-        if (GUILayout.Button("Run Tests"))     { _testHarness.RunTests();  }
-        if (GUILayout.Button("Refresh Tests")) { _testHarness.FindTests(); }
+    
         
-        if (_testHarness == null) { _testHarness = new TestHarness(); }
-
-        if (_testHarness.HasTests) 
+        if (_testHarness != null && _testHarness.HasTests) 
         {
-            _DrawSuites();
+            if (GUILayout.Button("Run Tests"))     { _testHarness.RunTests();  }
+            if (GUILayout.Button("Refresh Tests")) { _testHarness.FindTests(); }
+            
+            _DrawSuites();    
         }
         else {
             GUILayout.Label("No Tests.  Please Refresh.");
@@ -50,6 +57,8 @@ public class TestWindow : EditorWindow
 
     private void _DrawSuites ()
     {
+        if (_testHarness == null) { return; }
+
         foreach(string suiteName in _testHarness.GetSuiteNames()) 
         {
             GUILayout.Label(suiteName, _suitePassedStyle);

@@ -38,7 +38,10 @@ public class TestHarness
 
     private void _CheckTypes (Assembly a) 
     {
-        foreach(Type t in a.GetTypes()) { _CheckMethods(t); }
+        foreach(Type t in a.GetTypes()) 
+        { 
+            if (_IsTestedType(t)) { _CheckMethods(t); }
+        }
     }
 
     private void _CheckMethods (Type t) 
@@ -67,6 +70,11 @@ public class TestHarness
     private bool _IsTestMethod (MethodInfo m) 
     {
         return m.GetCustomAttributes(typeof(TestAttribute), true).Length > 0;
+    }
+
+    private bool _IsTestedType (Type t)
+    {
+        return t.GetCustomAttributes(typeof(HasTestsAttribute), true).Length > 0;   
     }
 
     private void _AddTest (MethodInfo m) 
