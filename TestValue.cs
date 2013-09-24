@@ -25,7 +25,7 @@ public class TestValue<T> where T: IComparable<T>
         _value = val;
     }
 
-    public TestValue<T> ToBe(T val)
+    public TestValue<T> ToBe (T val)
     {
         if (!(Comparer<T>.Equals(val, _value) == _inversion)) 
         {
@@ -34,7 +34,7 @@ public class TestValue<T> where T: IComparable<T>
         return this;
     }
 
-    public TestValue<T> ToBeLessThan(T val) 
+    public TestValue<T> ToBeLessThan (T val) 
     {
         if ((val.CompareTo(_value) <= 0) == _inversion) 
         {
@@ -43,7 +43,7 @@ public class TestValue<T> where T: IComparable<T>
         return this;
     }
 
-    public TestValue<T> ToBeGreaterThan(T val) 
+    public TestValue<T> ToBeGreaterThan (T val) 
     {
         if ((val.CompareTo(_value) >= 0) == _inversion) 
         {
@@ -52,7 +52,7 @@ public class TestValue<T> where T: IComparable<T>
         return this;
     }
 
-    public override string ToString() 
+    public override string ToString () 
     {
         return _value.ToString();
     }

@@ -1,8 +1,8 @@
 using System;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class HasTestsAttribute : Attribute 
+public class HasTestsAttribute : TestFrameworkAttribute 
 {
-    public HasTestsAttribute() {}
-
+    public HasTestsAttribute (string suiteName) : base(suiteName) {}
+    public HasTestsAttribute () : base() {}
 }

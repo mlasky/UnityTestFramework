@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 
+[HasTests]
 public class TestHarness 
 {
     public bool HasTests 
@@ -12,88 +13,193 @@ public class TestHarness
         get { return _testSuites != null && _testSuites.Count > 0; }
         set {}
     }
-    private static  Dictionary<string, List<TestRunner>> _testSuites;
+    
+    private static  List<MethodInfo>                _testFrameworkMethods;
+    private static  Dictionary<string, TestSuite>   _testSuites;
 
     public void RunTests () 
     {
-        foreach(List<TestRunner> testSuite in _testSuites.Values)
+        foreach(TestSuite testSuite in _testSuites.Values)
         {
-            foreach(TestRunner tr in testSuite) { tr.RunTest(); }
+            testSuite.ExecuteTests();
         }
     }
 
     public void FindTests () 
     {
-        _testSuites = new Dictionary<string, List<TestRunner>>();
-
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-        _CheckAssemblies(assemblies);
+        _testFrameworkMethods = FindTestMethodsInAssemblies(assemblies);
+        _testSuites = BuildSuites(_testFrameworkMethods);
     }
 
-    private void _CheckAssemblies (Assembly[] assemblies)
+    public List<string> GetSuiteNames ()
     {
-        foreach(Assembly a in assemblies) { _CheckTypes(a); }
+        List<string> suiteNames = new List<string>();
+
+        foreach(string suiteName in _testSuites.Keys)
+        {
+            suiteNames.Add(suiteName);
+        }
+        return suiteNames;
     }
 
-    private void _CheckTypes (Assembly a) 
+    public List<TestRunner> GetTests () 
     {
-        foreach(Type t in a.GetTypes()) 
+        List<TestRunner> tests = new List<TestRunner>();
+
+        foreach(TestSuite ts in _testSuites.Values)
+        {
+            tests.AddRange(ts.GetTestRunners());
+        }
+        return tests;
+    }
+
+    public List<TestRunner> GetTests (string suiteName) 
+    {
+        return _testSuites[suiteName].GetTestRunners();
+    }
+
+    public static Dictionary<string, TestSuite> BuildSuites (List<MethodInfo> methods)
+    {
+        Dictionary<string, TestSuite> suites = new Dictionary<string, TestSuite>();
+        
+        foreach (MethodInfo method in _testFrameworkMethods)
+        {
+            string name = TestSuite.GetSuiteNameFromMethod(method);
+            if (!suites.ContainsKey(name)) { suites[name] = new TestSuite(name); }
+            
+            suites[name].AddMethod(method);
+        }
+        return suites;
+    }
+
+    public static List<MethodInfo> FindTestMethodsInAssemblies (Assembly[] assemblies)
+    {
+        List<MethodInfo> testMethods = new List<MethodInfo>();
+
+        foreach(Assembly assembly in assemblies) 
         { 
-            if (_IsTestedType(t)) { _CheckMethods(t); }
+            testMethods.AddRange(FindTestMethodsInAssembly(assembly));
         }
+        return testMethods;
     }
 
-    private void _CheckMethods (Type t) 
+    public static List<MethodInfo> FindTestMethodsInAssembly (Assembly assembly) 
     {
-        foreach(MethodInfo m in t.GetMethods())
-        {
-            if (_IsTestMethod(m)) { _AddTest(m); }
-        }
-    }
+        List<MethodInfo> testMethods = new List<MethodInfo>();
 
-    public  Dictionary<string, List<TestRunner>>.KeyCollection GetSuiteNames () 
-    {
-        return _testSuites.Keys;
-    }
-
-    public Dictionary<string, List<TestRunner>>.ValueCollection GetSuites () 
-    {
-        return _testSuites.Values;
-    }
-
-    public List<TestRunner> GetTests(string suiteName)
-    {
-        return _testSuites[suiteName];
-    }
-
-    private bool _IsTestMethod (MethodInfo m) 
-    {
-        return m.GetCustomAttributes(typeof(TestAttribute), true).Length > 0;
-    }
-
-    private bool _IsTestedType (Type t)
-    {
-        return t.GetCustomAttributes(typeof(HasTestsAttribute), true).Length > 0;   
-    }
-
-    private void _AddTest (MethodInfo m) 
-    {
-        System.Type type = typeof(TestAttribute);
-        
-        TestAttribute[] testAttrs = (TestAttribute[]) 
-                                    m.GetCustomAttributes(type, true);
-        
-        foreach (TestAttribute ta in testAttrs) 
-        {
-            TestRunner tr = new TestRunner(m);
-
-            try { _testSuites[ta.Suite].Add(tr); } 
-            catch (KeyNotFoundException) 
-            {
-                _testSuites[ta.Suite] = new List<TestRunner>();
-                _testSuites[ta.Suite].Add(tr);
+        foreach(Type type in assembly.GetTypes()) 
+        { 
+            if (IsTestedType(type)) 
+            { 
+                testMethods.AddRange(FindTestMethodsInType(type));
             }
         }
+        return testMethods;
     }
+
+    public static List<MethodInfo> FindTestMethodsInType (Type type) 
+    {
+        List<MethodInfo> testMethods = new List<MethodInfo>();
+
+        foreach(MethodInfo method in type.GetMethods())
+        {   
+            if (IsTestFrameWorkMethod(method))
+            {
+                testMethods.Add(method);
+            }
+        }
+        return testMethods;
+    }
+
+    public static bool IsTestFrameWorkMethod (MethodInfo m)
+    {
+        Type type = typeof(TestFrameworkAttribute);
+        return m.GetCustomAttributes(type, true).Length > 0;
+    }
+
+    public static bool IsTestedType (Type t)
+    {
+        Type type = typeof(HasTestsAttribute);
+        return t.GetCustomAttributes(type, true).Length > 0;   
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectTrueToBeTrue(TestRunner tr) 
+    {
+       tr.Expect(true).ToBe(true);
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectTrueNotToBeNotTrue(TestRunner tr) 
+    {
+       tr.Expect(true).Not.Not.ToBe(true);
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectOneToBeOne(TestRunner tr) 
+    {
+       tr.Expect(1).ToBe(1);
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectOneFloatToBeOneInteger(TestRunner tr) 
+    {
+       tr.Expect(1f).ToBe(1);
+    }  
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectHelloToBeHello(TestRunner tr) 
+    {
+       tr.Expect("Hello").ToBe("Hello");
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectOneNotToBeTwo(TestRunner tr) 
+    {
+       tr.Expect(1).Not.ToBe(2);
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectOnePointOneFloatNotToBeOneInteger(TestRunner tr) 
+    {
+       tr.Expect(1.1f).Not.ToBe(1);
+    }  
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectTrueNotToBeFalse(TestRunner tr) 
+    {
+       tr.Expect(true).Not.ToBe(false);
+    }
+
+    [Test("TestFramework::Expect::ToBe")]
+    public static void ExpectHelloNotToBeHi(TestRunner tr) 
+    {
+       tr.Expect("Hello").Not.ToBe("Hi");
+    }
+
+    [Test("TestFramework::Expect::ToBeLessThan")]
+    public static void ExpectOneToBeLessThanTwo(TestRunner tr) 
+    {
+       tr.Expect(1).ToBeLessThan(2);
+    }    
+
+    [Test("TestFramework::Expect::ToBeLessThan")]
+    public static void ExpectTwoNotToBeLessThanTwo(TestRunner tr) 
+    {
+       tr.Expect(2).Not.ToBeLessThan(2);
+    }   
+
+    [Test("TestFramework::Expect::ToBeGreaterThan")]
+    public static void ExpectTwoToBeGreaterThanOne(TestRunner tr) 
+    {
+       tr.Expect(2).ToBeGreaterThan(1);
+    }   
+
+    [Test("TestFramework::Expect::ToBeGreaterThan")]
+    public static void ExpectTwoNotToBeGreaterThanTwo(TestRunner tr) 
+    {
+       tr.Expect(2).Not.ToBeGreaterThan(2);
+    }   
 }

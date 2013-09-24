@@ -25,7 +25,7 @@ public class TestWindow : EditorWindow
 
     static void ShowWindow () 
     {
-        EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow");
+        EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow").Repaint();
     }
     
     void OnInspectorUpdate () {
@@ -34,7 +34,7 @@ public class TestWindow : EditorWindow
         if (!_testHarness.HasTests) 
         {
             _testHarness.FindTests();
-            EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow").Repaint();
+            ShowWindow();
         }
     }
 
@@ -108,6 +108,7 @@ public class TestWindow : EditorWindow
 
             _passedStyle = new GUIStyle();
             _passedStyle.padding = new RectOffset(15, 3, 3, 3);
+            _passedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _passedStyle.normal.textColor = Color.black;
             _passedStyle.normal.background = _ColorToTex(600, 1, passedColor);    
         }
@@ -117,6 +118,7 @@ public class TestWindow : EditorWindow
             Color failedColor = new Color(240f / 255f, 45f / 255f, 45f / 255f);
             _failedStyle = new GUIStyle();
             _failedStyle.padding = new RectOffset(15, 3, 3, 3);
+            _failedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _failedStyle.normal.textColor = Color.white;
             _failedStyle.normal.background = _ColorToTex(600, 1, failedColor);    
         }
@@ -143,6 +145,7 @@ public class TestWindow : EditorWindow
             Color sColor = new Color(90f / 255f, 106f / 255f, 83f / 255f);
             _suitePassedStyle = new GUIStyle();
             _suitePassedStyle.padding = new RectOffset(5, 5, 5, 5);
+            _suitePassedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _suitePassedStyle.normal.textColor = Color.white;
             _suitePassedStyle.normal.background = _ColorToTex(600, 1, sColor);    
         }
