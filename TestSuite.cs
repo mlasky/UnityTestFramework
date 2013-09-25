@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine; 
 
-[HasTests]
 public class TestSuite
 {
     public string Name 
@@ -15,7 +15,7 @@ public class TestSuite
     private Dictionary<string, TestRunner>           _testRunners;    
     private Dictionary<string, BeforeEachTestRunner> _beforeEachTestRunners;
     
-    public TestSuite(string name)
+    public TestSuite (string name)
     {
         _name                  = name;
 
@@ -65,13 +65,13 @@ public class TestSuite
     public void AddTestMethod (MethodInfo method)
     {
         TestRunner tr = new TestRunner(method);
-        _testRunners[tr.Name] = tr;
+        _testRunners[tr.MethodName] = tr;
     }
 
     public void AddBeforeEachMethod (MethodInfo method)
     {
         BeforeEachTestRunner tr = new BeforeEachTestRunner(method);
-        _beforeEachTestRunners[tr.Name] = tr;
+        _beforeEachTestRunners[tr.MethodName] = tr;
     }
 
     public static bool IsTestMethod (MethodInfo method) 
@@ -84,17 +84,22 @@ public class TestSuite
         return MethodHasAttribute<BeforeEachTestAttribute>(method);
     }
 
-    public static bool MethodHasAttribute<T>(MethodInfo m)
+    public static bool MethodHasAttribute<T> (MethodInfo m)
     {
-        Type type = typeof(T);
-        return m.GetCustomAttributes(type, true).Length > 0;
+        return m.GetCustomAttributes(typeof(T), true).Length > 0;
     }
 
     public static string GetSuiteNameFromMethod(MethodInfo method)
     {
         Type type = typeof(TestFrameworkAttribute);
-        TestFrameworkAttribute attr = (TestFrameworkAttribute) method.GetCustomAttributes(type, true)[0];
+        TestFrameworkAttribute attr = (TestFrameworkAttribute) 
+                                      method.GetCustomAttributes(type, true)[0];
         return attr.Suite;
+    }
+
+    public override string ToString() 
+    {
+        return "TestSuite: " + Name;
     }
 }
 

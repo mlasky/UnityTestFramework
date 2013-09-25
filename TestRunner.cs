@@ -27,7 +27,7 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
         testState = TestStates.RUNNING;
 
         try {
-            _method.Invoke(_method.GetType(), new [] { this });
+            _method.Invoke(null, new [] { this });
             testState = TestStates.PASSED;
         } 
         catch (Exception) {

@@ -1,8 +1,9 @@
 using System;
 using System.Reflection;
+using UnityEngine;
 
 [HasTests]
-public static class TestSuiteSpec 
+public class TestSuiteSpec 
 {
     public static TestSuite testSuite;
 

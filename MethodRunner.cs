@@ -43,11 +43,11 @@ public class MethodRunner<T> where T: TestFrameworkAttribute
     
     public virtual void RunMethod() 
     {
-        _method.Invoke(_method.GetType(), new [] { this });
+        _method.Invoke(null, new [] { this });
     }
 
-    public TestValue<T> Expect<T> (T val) where T: IComparable<T>
+    public TestValue<U> Expect<U> (U val) where U: IComparable<U>
     {
-        return new TestValue<T>(val);
+        return new TestValue<U>(val);
     }
 }
