@@ -19,17 +19,10 @@ public class MethodRunner<T> where T: TestFrameworkAttribute
         set {}
     }
 
-    public string       Suite
-    {
-        get { return _suite; }
-        set {}
-    }
-
     protected   MethodInfo _method;
     private     string     _name;
     private     string     _methodName;
-    private     string     _suite;
-
+ 
     protected T[]      _attributes;
     
     public MethodRunner (MethodInfo m)
@@ -38,7 +31,6 @@ public class MethodRunner<T> where T: TestFrameworkAttribute
         _method     = m;
         _methodName = m.Name;
         _name       = Regex.Replace(m.Name, "([A-Z])", " $1", RegexOptions.None);
-        _suite      = _attributes[0].Suite;
     }    
     
     public virtual void RunMethod() 

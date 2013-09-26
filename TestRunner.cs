@@ -15,23 +15,29 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
         FAILED  = 3
     }
 
-    public TestStates testState;
+    public TestStates  TestState 
+    {
+        get { return _testState; }
+        set {}
+    }
+
+    private TestStates _testState;
 
     public TestRunner (MethodInfo m) : base(m)
     {
-         testState  = TestStates.NOT_RUN;
+         _testState  = TestStates.NOT_RUN;
     }
 
     public override void RunMethod ()
     {
-        testState = TestStates.RUNNING;
+        _testState = TestStates.RUNNING;
 
         try {
             _method.Invoke(null, new [] { this });
-            testState = TestStates.PASSED;
+            _testState = TestStates.PASSED;
         } 
         catch (Exception) {
-            testState = TestStates.FAILED;
+            _testState = TestStates.FAILED;
         }
     }
 }

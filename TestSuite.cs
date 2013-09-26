@@ -91,10 +91,10 @@ public class TestSuite
 
     public static string GetSuiteNameFromMethod(MethodInfo method)
     {
-        Type type = typeof(TestFrameworkAttribute);
-        TestFrameworkAttribute attr = (TestFrameworkAttribute) 
-                                      method.GetCustomAttributes(type, true)[0];
-        return attr.Suite;
+        Type type = typeof(HasTestsAttribute);
+        HasTestsAttribute attr = (HasTestsAttribute) 
+                                 method.DeclaringType.GetCustomAttributes(type, true)[0];
+        return attr.SuiteName;
     }
 
     public override string ToString() 

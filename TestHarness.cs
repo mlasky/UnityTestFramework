@@ -13,9 +13,15 @@ public class TestHarness
         get { return _testSuites != null && _testSuites.Count > 0; }
         set {}
     }
+
+    public Dictionary<string, TestSuite> TestSuites 
+    {
+        get { return _testSuites; }
+        set {}
+    }
     
-    private static  List<MethodInfo>                _testFrameworkMethods;
-    private static  Dictionary<string, TestSuite>   _testSuites;
+    private List<MethodInfo>                _testFrameworkMethods;
+    private Dictionary<string, TestSuite>   _testSuites;
 
     public void RunTests () 
     {
@@ -41,6 +47,7 @@ public class TestHarness
         {
             suiteNames.Add(suiteName);
         }
+        
         return suiteNames;
     }
 
@@ -52,10 +59,11 @@ public class TestHarness
         {
             tests.AddRange(ts.GetTestRunners());
         }
+        
         return tests;
     }
 
-    public List<TestRunner> GetTests (string suiteName) 
+    public List<TestRunner> GetTestsInSuite (string suiteName) 
     {
         return _testSuites[suiteName].GetTestRunners();
     }
@@ -64,13 +72,18 @@ public class TestHarness
     {
         Dictionary<string, TestSuite> suites = new Dictionary<string, TestSuite>();
         
-        foreach (MethodInfo method in _testFrameworkMethods)
+        foreach (MethodInfo method in methods)
         {
             string name = TestSuite.GetSuiteNameFromMethod(method);
-            if (!suites.ContainsKey(name)) { suites[name] = new TestSuite(name); }
+            
+            if (!suites.ContainsKey(name)) 
+            { 
+                suites[name] = new TestSuite(name); 
+            }
             
             suites[name].AddMethod(method);
         }
+        
         return suites;
     }
 
@@ -82,6 +95,7 @@ public class TestHarness
         { 
             testMethods.AddRange(FindTestMethodsInAssembly(assembly));
         }
+
         return testMethods;
     }
 
@@ -96,6 +110,7 @@ public class TestHarness
                 testMethods.AddRange(FindTestMethodsInType(type));
             }
         }
+        
         return testMethods;
     }
 
@@ -110,6 +125,7 @@ public class TestHarness
                 testMethods.Add(method);
             }
         }
+        
         return testMethods;
     }
 

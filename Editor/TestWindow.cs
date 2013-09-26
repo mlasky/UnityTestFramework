@@ -8,24 +8,26 @@ using UnityEditor;
 [System.Serializable]
 public class TestWindow : EditorWindow 
 {
-    
-    private static  GUIStyle                             _passedStyle;
-    private static  GUIStyle                             _failedStyle;
-    private static  GUIStyle                             _notRunStyle;
-    private static  GUIStyle                             _runningStyle;
-    private static  GUIStyle                             _suitePassedStyle;
-
-    private         TestHarness                          _testHarness;
+    private static  GUIStyle    _passedStyle;
+    private static  GUIStyle    _failedStyle;
+    private static  GUIStyle    _notRunStyle;
+    private static  GUIStyle    _runningStyle;
+    private static  GUIStyle    _suitePassedStyle;
+    private static  Vector2     _scrollPosition;
+              
+    private         TestHarness _testHarness;
         
     [MenuItem ("Window/TestWindow")]
     static void Init () 
     {
+        _scrollPosition = Vector2.zero;
         ShowWindow();
     }
 
     static void ShowWindow () 
     {
-        EditorWindow.GetWindow(typeof(TestWindow), false, "TestWindow").Repaint();
+        Type type = typeof(TestWindow);
+        EditorWindow.GetWindow(type, false, "TestWindow").Repaint();
     }
     
     void OnInspectorUpdate () {
@@ -47,8 +49,10 @@ public class TestWindow : EditorWindow
         {
             if (GUILayout.Button("Run Tests"))     { _testHarness.RunTests();  }
             if (GUILayout.Button("Refresh Tests")) { _testHarness.FindTests(); }
-            
-            _DrawSuites();    
+
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+                _DrawSuites();    
+            EditorGUILayout.EndScrollView();
         }
         else {
             GUILayout.Label("No Tests.  Please Refresh.");
@@ -69,7 +73,7 @@ public class TestWindow : EditorWindow
 
     private void _DrawTests (string suiteName)
     {
-        foreach(TestRunner tr in _testHarness.GetTests(suiteName))
+        foreach(TestRunner tr in _testHarness.GetTestsInSuite(suiteName))
         {
             GUILayout.Label(tr.Name, _GetStyle(tr));
         }
@@ -78,7 +82,7 @@ public class TestWindow : EditorWindow
     private GUIStyle _GetStyle (TestRunner tr)
     {
         GUIStyle style;
-        switch (tr.testState)
+        switch (tr.TestState)
         {
             case TestRunner.TestStates.PASSED:
                 style = _passedStyle;
@@ -116,6 +120,7 @@ public class TestWindow : EditorWindow
         if (_failedStyle == null)
         {
             Color failedColor = new Color(240f / 255f, 45f / 255f, 45f / 255f);
+
             _failedStyle = new GUIStyle();
             _failedStyle.padding = new RectOffset(15, 3, 3, 3);
             _failedStyle.margin  = new RectOffset(10, 1, 0, 1);
@@ -143,6 +148,7 @@ public class TestWindow : EditorWindow
         if (_suitePassedStyle == null)
         {
             Color sColor = new Color(90f / 255f, 106f / 255f, 83f / 255f);
+            
             _suitePassedStyle = new GUIStyle();
             _suitePassedStyle.padding = new RectOffset(5, 5, 5, 5);
             _suitePassedStyle.margin  = new RectOffset(10, 1, 0, 1);
