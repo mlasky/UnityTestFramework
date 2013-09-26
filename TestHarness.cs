@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 
-[HasTests]
 public class TestHarness 
 {
     public bool HasTests 
