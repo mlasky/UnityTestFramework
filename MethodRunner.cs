@@ -19,15 +19,20 @@ public class MethodRunner<T> where T: TestFrameworkAttribute
         set {}
     }
 
+    public MethodInfo   Method
+    {
+        get {return _method; }
+        set {}
+    }
+
     protected   MethodInfo _method;
+    
     private     string     _name;
     private     string     _methodName;
  
-    protected T[]      _attributes;
     
     public MethodRunner (MethodInfo m)
     {
-        _attributes = (T[]) m.GetCustomAttributes(typeof(T), true);
         _method     = m;
         _methodName = m.Name;
         _name       = Regex.Replace(m.Name, "([A-Z])", " $1", RegexOptions.None);

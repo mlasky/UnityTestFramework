@@ -11,6 +11,12 @@ public static class TestValueSpec
     }
 
     [Test]
+    public static void ExpectTrueNotToBeFalse(TestRunner tr) 
+    {
+       tr.Expect(true).Not.ToBe(false);
+    }
+
+    [Test]
     public static void ExpectTrueNotToBeNotTrue(TestRunner tr) 
     {
        tr.Expect(true).Not.Not.ToBe(true);
@@ -45,12 +51,6 @@ public static class TestValueSpec
     {
        tr.Expect(1.1f).Not.ToBe(1);
     }  
-
-    [Test]
-    public static void ExpectTrueNotToBeFalse(TestRunner tr) 
-    {
-       tr.Expect(true).Not.ToBe(false);
-    }
 
     [Test]
     public static void ExpectHelloNotToBeHi(TestRunner tr) 
