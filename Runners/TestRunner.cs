@@ -50,12 +50,10 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
         } 
         catch (TargetInvocationException tie) 
         {
-            if (tie.InnerException is TestPassedException)
-            {
+            if (tie.InnerException is TestPassedException) {
                 _OnTestPassed(tie.InnerException);
             }
-            else if (tie.InnerException is TestFailedException)
-            {
+            else if (tie.InnerException is TestFailedException) {
                 _OnTestFailure((TestFailedException) tie.InnerException);    
             }
         }

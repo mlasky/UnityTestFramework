@@ -34,8 +34,7 @@ public class TestHarnessSpec
         
         foreach(string suitename in harness.GetSuiteNames())
         {
-            if (suitename == sampleSuiteName)
-            {
+            if (suitename == sampleSuiteName) {
                 found = true;
             }
         }
