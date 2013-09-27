@@ -24,8 +24,7 @@ public class TestHarness
 
     public void RunTests () 
     {
-        foreach(TestSuite testSuite in _testSuites.Values)
-        {
+        foreach(TestSuite testSuite in _testSuites.Values) {
             testSuite.ExecuteTests();
         }
     }
