@@ -15,7 +15,7 @@ public class SampleTestsSpec
     [Test]
     public static void ThisIsASampleTest(TestRunner r)
     {
-        r.Expect(true).ToBe(true);
+        r.Expect(true).ToBe(false);
     }
 
     [Test]

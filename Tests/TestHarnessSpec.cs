@@ -31,6 +31,7 @@ public class TestHarnessSpec
     {
         harness.FindTests();
         bool found = false;
+        
         foreach(string suitename in harness.GetSuiteNames())
         {
             if (suitename == sampleSuiteName)

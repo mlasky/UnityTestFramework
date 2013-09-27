@@ -75,7 +75,7 @@ public class TestWindow : EditorWindow
     {
         foreach(TestRunner tr in _testHarness.GetTestsInSuite(suiteName))
         {
-            GUILayout.Label(tr.Name, _GetStyle(tr));
+            GUILayout.Label(tr.Name + " - " + tr.StatusMessage, _GetStyle(tr));
         }
     }
 
@@ -111,6 +111,7 @@ public class TestWindow : EditorWindow
             Color passedColor = new Color(45f / 255f, 240f / 255f, 91f / 255f);
 
             _passedStyle = new GUIStyle();
+            _passedStyle.fontSize = 18;
             _passedStyle.padding = new RectOffset(15, 3, 3, 3);
             _passedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _passedStyle.normal.textColor = Color.black;
@@ -122,6 +123,7 @@ public class TestWindow : EditorWindow
             Color failedColor = new Color(240f / 255f, 45f / 255f, 45f / 255f);
 
             _failedStyle = new GUIStyle();
+            _failedStyle.fontSize = 20;
             _failedStyle.padding = new RectOffset(15, 3, 3, 3);
             _failedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _failedStyle.normal.textColor = Color.white;
@@ -131,6 +133,7 @@ public class TestWindow : EditorWindow
         if (_notRunStyle == null)
         {
             _notRunStyle = new GUIStyle();
+            _notRunStyle.fontSize = 18;
             _notRunStyle.padding = new RectOffset(5, 3, 3, 3);
             _notRunStyle.margin  = new RectOffset(10, 1, 0, 1);
             _notRunStyle.normal.textColor = Color.white;
@@ -140,6 +143,7 @@ public class TestWindow : EditorWindow
         if (_runningStyle == null)
         {
             _runningStyle = new GUIStyle();
+            _runningStyle.fontSize = 18;
             _runningStyle.padding = new RectOffset(15, 3, 3, 3);
             _runningStyle.normal.textColor = Color.white;
             _runningStyle.normal.background = _ColorToTex(600, 1, Color.yellow);    
@@ -150,6 +154,7 @@ public class TestWindow : EditorWindow
             Color sColor = new Color(90f / 255f, 106f / 255f, 83f / 255f);
             
             _suitePassedStyle = new GUIStyle();
+            _suitePassedStyle.fontSize = 25;
             _suitePassedStyle.padding = new RectOffset(5, 5, 5, 5);
             _suitePassedStyle.margin  = new RectOffset(10, 1, 0, 1);
             _suitePassedStyle.normal.textColor = Color.white;
