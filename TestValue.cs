@@ -27,38 +27,20 @@ public class TestValue<T> where T: IComparable<T>
 
     public TestValue<T> ToBe (T val)
     {
-        if (!(Comparer<T>.Equals(val, _value) == _inversion)) 
-        {
-            string msg = "to be";
-            throw new TestFailedException(_GetMessage<T>(val, msg));
-        }
-        else {
-            throw new TestPassedException();
-        }
+        _TestWith<T>(Comparer<T>.Equals(_value, val), val, "to be");
+        return this;
     }
 
     public TestValue<T> ToBeLessThan (T val) 
     {
-        if ((val.CompareTo(_value) <= 0) == _inversion)
-        {
-            string msg = "to be less than";
-            throw new TestFailedException(_GetMessage<T>(val, msg));
-        }
-        else {
-            throw new TestPassedException();
-        }    
+        _TestWith<T>(_value.CompareTo(val) < 0, val, "to be less than");    
+        return this;
     }
 
     public TestValue<T> ToBeGreaterThan (T val) 
     {
-        if ((val.CompareTo(_value) >= 0) == _inversion)
-        {
-            string msg = "to be greater than";
-            throw new TestFailedException(_GetMessage<T>(val, msg));
-        }
-        else {
-            throw new TestPassedException();
-        }
+        _TestWith<T>(_value.CompareTo(val) > 0, val, "to be greater than");
+        return this;
     }
 
     public string _GetMessage<T>(T val, string operation) 
@@ -66,6 +48,16 @@ public class TestValue<T> where T: IComparable<T>
         string not = (!_inversion)? " not ":" ";
 
         return  "Expected " + _value + not + operation + " " + val;
+    }
+
+    private void _TestWith<T>(bool expression, T val, string failMsgPart)
+    {
+        if (expression == _inversion) {
+            throw new TestPassedException();            
+        }
+        else {
+            throw new TestFailedException(_GetMessage<T>(val, failMsgPart));
+        }
     }
 
     public override string ToString () 
