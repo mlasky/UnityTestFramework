@@ -48,17 +48,20 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
         try {
             _method.Invoke(null, new [] { this });
         } 
-        catch (TargetInvocationException tie) 
-        {
-            if (tie.InnerException is TestPassedException) {
-                _OnTestPassed(tie.InnerException);
-            }
-            else if (tie.InnerException is TestFailedException) {
-                _OnTestFailure((TestFailedException) tie.InnerException);    
-            }
+        catch (TargetInvocationException tie) {
+            _OnTestComplete(tie);
         }
     }
 
+    private void _OnTestComplete (TargetInvocationException tie) 
+    {
+        if (tie.InnerException is TestPassedException) {
+            _OnTestPassed(tie.InnerException);
+        }
+        else if (tie.InnerException is TestFailedException) {
+            _OnTestFailure((TestFailedException) tie.InnerException);    
+        }
+    }
     private void _OnTestPassed (Exception e) 
     {
         _testState = TestStates.PASSED;

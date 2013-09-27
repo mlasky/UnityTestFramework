@@ -19,7 +19,7 @@ public class SampleTestsSpec
     }
 
     [Test]
-    public static void ExpectMemberToBeTrue(TestRunner r)
+    public static void ExpectMemeberNotToBeFalse(TestRunner r)
     {
         r.Expect(_member).Not.ToBe(false);
     }

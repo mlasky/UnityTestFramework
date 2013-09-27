@@ -42,8 +42,7 @@ public class TestHarness
     {
         List<string> suiteNames = new List<string>();
 
-        foreach(string suiteName in _testSuites.Keys)
-        {
+        foreach(string suiteName in _testSuites.Keys) {
             suiteNames.Add(suiteName);
         }
         
@@ -54,8 +53,7 @@ public class TestHarness
     {
         List<TestRunner> tests = new List<TestRunner>();
 
-        foreach(TestSuite ts in _testSuites.Values)
-        {
+        foreach(TestSuite ts in _testSuites.Values) {
             tests.AddRange(ts.GetTestRunners());
         }
         
@@ -75,8 +73,7 @@ public class TestHarness
         {
             string name = TestSuite.GetSuiteNameFromMethod(method);
             
-            if (!suites.ContainsKey(name)) 
-            { 
+            if (!suites.ContainsKey(name)) { 
                 suites[name] = new TestSuite(name); 
             }
             
@@ -90,8 +87,7 @@ public class TestHarness
     {
         List<MethodInfo> testMethods = new List<MethodInfo>();
 
-        foreach(Assembly assembly in assemblies) 
-        { 
+        foreach(Assembly assembly in assemblies) { 
             testMethods.AddRange(FindTestMethodsInAssembly(assembly));
         }
 
@@ -104,8 +100,7 @@ public class TestHarness
 
         foreach(Type type in assembly.GetTypes()) 
         { 
-            if (IsTestedType(type)) 
-            { 
+            if (IsTestedType(type)) { 
                 testMethods.AddRange(FindTestMethodsInType(type));
             }
         }
@@ -119,8 +114,7 @@ public class TestHarness
 
         foreach(MethodInfo method in type.GetMethods())
         {   
-            if (IsTestFrameWorkMethod(method))
-            {
+            if (IsTestFrameWorkMethod(method)) {
                 testMethods.Add(method);
             }
         }

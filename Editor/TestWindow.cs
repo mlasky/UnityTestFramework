@@ -30,8 +30,11 @@ public class TestWindow : EditorWindow
         EditorWindow.GetWindow(type, false, "TestWindow").Repaint();
     }
     
-    void OnInspectorUpdate () {
-        if (_testHarness == null) { _testHarness = new TestHarness(); }
+    void OnInspectorUpdate () 
+    {
+        if (_testHarness == null) { 
+            _testHarness = new TestHarness(); 
+        }
 
         if (!_testHarness.HasTests) 
         {
@@ -165,7 +168,9 @@ public class TestWindow : EditorWindow
     {
         Color[] pix = new Color[width*height];
 
-        for(int i = 0; i < pix.Length; i++) { pix[i] = col; }
+        for(int i = 0; i < pix.Length; i++) { 
+            pix[i] = col; 
+        }
  
         Texture2D result = new Texture2D(width, height);
 
