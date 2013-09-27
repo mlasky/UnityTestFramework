@@ -27,8 +27,7 @@ public class TestSuite
     {
         foreach(TestRunner tr in _testRunners.Values)
         {
-            foreach(BeforeEachTestRunner ber in _beforeEachTestRunners.Values)
-            {
+            foreach(BeforeEachTestRunner ber in _beforeEachTestRunners.Values) {
                 ber.RunMethod();
             }
             tr.RunMethod();
@@ -50,8 +49,7 @@ public class TestSuite
     {
         List<TestRunner> testRunners = new List<TestRunner>();
 
-        foreach (TestRunner tr in _testRunners.Values)
-        {
+        foreach (TestRunner tr in _testRunners.Values) {
             testRunners.Add(tr);
         }
         return testRunners;
@@ -91,9 +89,11 @@ public class TestSuite
 
     public static string GetSuiteNameFromMethod(MethodInfo method)
     {
-        Type type = typeof(HasTestsAttribute);
+        Type type  = typeof(HasTestsAttribute);
+        Type dType = method.DeclaringType;
+        
         HasTestsAttribute attr = (HasTestsAttribute) 
-                                 method.DeclaringType.GetCustomAttributes(type, true)[0];
+                                 dType.GetCustomAttributes(type, true)[0];
         return attr.SuiteName;
     }
 

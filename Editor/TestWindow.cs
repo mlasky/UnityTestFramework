@@ -73,8 +73,7 @@ public class TestWindow : EditorWindow
 
     private void _DrawTests (string suiteName)
     {
-        foreach(TestRunner tr in _testHarness.GetTestsInSuite(suiteName))
-        {
+        foreach(TestRunner tr in _testHarness.GetTestsInSuite(suiteName)) {
             GUILayout.Label(tr.Name + " - " + tr.StatusMessage, _GetStyle(tr));
         }
     }
@@ -166,10 +165,7 @@ public class TestWindow : EditorWindow
     {
         Color[] pix = new Color[width*height];
 
-        for(int i = 0; i < pix.Length; i++)
-        {
-            pix[i] = col;
-        }
+        for(int i = 0; i < pix.Length; i++) { pix[i] = col; }
  
         Texture2D result = new Texture2D(width, height);
 
