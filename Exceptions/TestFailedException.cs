@@ -1,9 +1,9 @@
 using System;
 
 public class TestFailedException : Exception {
-    public string message;
+    public string testStatus;
 
     public TestFailedException(string msg) : base(msg) {
-        message = msg;
+        testStatus = msg;
     }
 }

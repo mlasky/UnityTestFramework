@@ -29,44 +29,43 @@ public class TestValue<T> where T: IComparable<T>
     {
         if (!(Comparer<T>.Equals(val, _value) == _inversion)) 
         {
-            throw new TestFailedException(_GetMessage<T>(val, "to be"));
+            string msg = "to be";
+            throw new TestFailedException(_GetMessage<T>(val, msg));
         }
         else {
             throw new TestPassedException();
         }
-
-        return this;
     }
 
     public TestValue<T> ToBeLessThan (T val) 
     {
         if ((val.CompareTo(_value) <= 0) == _inversion)
         {
-            throw new TestFailedException(_GetMessage<T>(val, "to be less than"));
+            string msg = "to be less than";
+            throw new TestFailedException(_GetMessage<T>(val, msg));
         }
         else {
             throw new TestPassedException();
-        }
-        
-        return this;    
+        }    
     }
 
     public TestValue<T> ToBeGreaterThan (T val) 
     {
         if ((val.CompareTo(_value) >= 0) == _inversion)
         {
-            throw new TestFailedException(_GetMessage<T>(val, "to be greater than"));
+            string msg = "to be greater than";
+            throw new TestFailedException(_GetMessage<T>(val, msg));
         }
         else {
             throw new TestPassedException();
         }
-            
-        return this;
     }
 
     public string _GetMessage<T>(T val, string operation) 
     {
-        return "Expected " + val + ((!_inversion)? " not ":" ") + operation + " " + _value;
+        string not = (!_inversion)? " not ":" ";
+
+        return  "Expected " + _value + not + operation + " " + val;
     }
 
     public override string ToString () 

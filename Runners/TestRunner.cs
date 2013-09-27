@@ -17,7 +17,7 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
 
     public string       StatusMessage 
     {
-        get { return _statusMessage; }
+        get { return _statusMessages[(int) _testState]; }
         set {}
     }
 
@@ -27,36 +27,48 @@ public class TestRunner : MethodRunner<TestFrameworkAttribute>
         set {}
     }
 
+    private string[]   _statusMessages;
     private TestStates _testState;
-    private string     _statusMessage = "Not Run";
 
     public TestRunner (MethodInfo m) : base(m)
     {
-         _testState  = TestStates.NOT_RUN;
+        _testState  = TestStates.NOT_RUN;
+
+        _statusMessages = new string[4];
+        _statusMessages[(int) TestStates.NOT_RUN] = "Not Run";
+        _statusMessages[(int) TestStates.RUNNING] = "Running";
+        _statusMessages[(int) TestStates.PASSED]  = "Passed";
+        _statusMessages[(int) TestStates.FAILED]  = "Failed";
     }
 
     public override void RunMethod ()
     {
         _testState = TestStates.FAILED;
-        _statusMessage = "Test Failed";
 
         try {
             _method.Invoke(null, new [] { this });
         } 
-        catch (TargetInvocationException tie) {
+        catch (TargetInvocationException tie) 
+        {
             if (tie.InnerException is TestPassedException)
             {
-                _testState = TestStates.PASSED;
-                _statusMessage = "Passed!";
+                _OnTestPassed(tie.InnerException);
             }
             else if (tie.InnerException is TestFailedException)
             {
-                _testState = TestStates.FAILED;
-                TestFailedException failedException = (TestFailedException) 
-                                                      tie.InnerException;
-                _statusMessage = failedException.message;    
+                _OnTestFailure((TestFailedException) tie.InnerException);    
             }
-            
         }
+    }
+
+    private void _OnTestPassed (Exception e) 
+    {
+        _testState = TestStates.PASSED;
+    }
+
+    private void _OnTestFailure (TestFailedException e)
+    {
+        _testState = TestStates.FAILED;
+        _statusMessages[(int) TestStates.FAILED] = e.testStatus;
     }
 }
